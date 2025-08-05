@@ -1,0 +1,140 @@
+import React, { useState } from 'react';
+
+// Este código simula a estrutura de módulos (export/import)
+// Dados: Módulo 'dados.js' com tema de fantasia
+const nomes = ['Elfos', 'Anões', 'Orcs', 'Dragões', 'Magos'];
+const adjetivos = ['Sombrios', 'Ancestrais', 'Luminosos', 'Guerreiros', 'Místicos'];
+
+// Algoritmo de aleatoriedade: Módulo 'aleatoriedade.js'
+const escolherAleatorio = (array) => {
+const indiceAleatorio = Math.floor(Math.random() * array.length);
+return array[indiceAleatorio];
+};
+
+const App = () => {
+const [nomePersonagemGerado, setNomePersonagemGerado] = useState('');
+const [nomesUsados, setNomesUsados] = useState([]);
+const [buscaResultado, setBuscaResultado] = useState('');
+const [nomeFormatado, setNomeFormatado] = useState('');
+
+// Lógica principal: Módulo 'logica.js'
+// Condicionais: Garantindo nomes únicos
+const criarNomePersonagem = () => {
+let nomeCompleto;
+// Fluxograma:
+// 1. Gerar nome aleatório.
+// 2. Verificar se o nome já está na lista de nomes usados.
+// 3. Se sim, voltar ao passo 1 (condição do while).
+// 4. Se não, seguir em frente.
+do {
+const nome = escolherAleatorio(nomes);
+const adjetivo = escolherAleatorio(adjetivos);
+nomeCompleto = `${nome} ${adjetivo}`;
+} while (nomesUsados.includes(nomeCompleto)); // Condicional de parada
+
+setNomesUsados(prev => [...prev, nomeCompleto]);
+setNomePersonagemGerado(nomeCompleto);
+};
+
+// Condição de parada com "for of"
+const buscarNomeComLetra = (letra) => {
+setBuscaResultado(''); // Limpa o estado anterior
+let nomeEncontrado = false;
+
+// O "for of" itera sobre os elementos da lista 'nomes'
+for (const nome of nomes) {
+if (nome.includes(letra)) { // Condicional para verificar se o nome contém a letra
+setBuscaResultado(`Encontrei um nome com a letra "${letra}": ${nome}`);
+nomeEncontrado = true;
+break; // Condição de parada: encerra o laço
+}
+}
+
+if (!nomeEncontrado) {
+setBuscaResultado(`Nenhum nome com a letra "${letra}" foi encontrado.`);
+}
+};
+
+// Método 'replace' para formatação de string
+const formatarNome = () => {
+if (nomePersonagemGerado) {
+// Substitui o primeiro espaço por um hífen.
+const novoNomeFormatado = nomePersonagemGerado.replace(' ', '-');
+setNomeFormatado(novoNomeFormatado);
+} else {
+setNomeFormatado('Nenhum nome para formatar.');
+}
+};
+
+return (
+<div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4">
+<div className="bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-2xl">
+<h1 className="text-3xl font-bold mb-6 text-center text-red-400">
+Gerador de Nomes de Personagens Fantásticos
+</h1>
+
+{/* Seção de Geração de Nomes Aleatórios */}
+<div className="mb-8">
+<h2 className="text-2xl font-semibold mb-4 border-b border-gray-600 pb-2">1. Aleatoriedade e Condicionais</h2>
+<p className="mb-4 text-gray-300">
+Clique para gerar um nome de personagem único.
+</p>
+<button
+onClick={criarNomePersonagem}
+className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105"
+>
+Gerar Nome de Personagem
+</button>
+{nomePersonagemGerado && (
+<p className="mt-4 text-center text-2xl font-bold text-yellow-400">
+{nomePersonagemGerado}
+</p>
+)}
+</div>
+
+{/* Seção de For...of e Condição de Parada */}
+<div className="mb-8">
+<h2 className="text-2xl font-semibold mb-4 border-b border-gray-600 pb-2">2. For...of e Condição de Parada</h2>
+<p className="mb-4 text-gray-300">
+Clique para buscar um nome que contenha a letra "ã" e pare o loop.
+</p>
+<button
+onClick={() => buscarNomeComLetra('ã')}
+className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105"
+>
+Buscar Nome com "ã"
+</button>
+{buscaResultado && (
+<p className="mt-4 text-center text-lg italic text-purple-300">
+{buscaResultado}
+</p>
+)}
+</div>
+
+{/* Seção do método Replace */}
+<div>
+<h2 className="text-2xl font-semibold mb-4 border-b border-gray-600 pb-2">3. Método `replace`</h2>
+<p className="mb-4 text-gray-300">
+Formate o último nome gerado, substituindo o espaço por um hífen.
+</p>
+<button
+onClick={formatarNome}
+className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+disabled={!nomePersonagemGerado}
+>
+Formatar Nome
+</button>
+{nomeFormatado && (
+<p className="mt-4 text-center text-xl text-green-300">
+Nome Original: <span className="font-bold text-white">{nomePersonagemGerado}</span>
+<br/>
+Nome Formatado: <span className="font-bold text-white">{nomeFormatado}</span>
+</p>
+)}
+</div>
+</div>
+</div>
+);
+};
+
+export default App;
